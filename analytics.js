@@ -1,44 +1,71 @@
 // Funcion de stack overflow que me genera el hash, para evitar utilizar librerías de terceros.
 function generateHash(string) {
-    var hash = 0;
-    if (string.length == 0)
-        return hash;
-    for (let i = 0; i < string.length; i++) {
-        var charCode = string.charCodeAt(i);
-        hash = ((hash << 7) - hash) + charCode;
-        hash = hash & hash;
-    }
-    return hash.toString();
+  var hash = 0;
+  if (string.length == 0) return hash;
+  for (let i = 0; i < string.length; i++) {
+    var charCode = string.charCodeAt(i);
+    hash = (hash << 7) - hash + charCode;
+    hash = hash & hash;
+  }
+  return hash.toString();
 }
 
 const verificarUserAgentConocido = () => {
-    
-    // Obtengo el user agent.
-    const userAgentActual = window.navigator.userAgent;
-    
-    const hash = generateHash(userAgentActual);
+  // Obtengo el user agent.
+  const userAgentActual = window.navigator.userAgent;
 
-    // Obtengo la lista de ingresos que fueron hechos desde los distintos navegadores.
-    // window.localStorage.getItem('listaIngresos') va a ser null la primera vez que se ejecute el código en el nuevo navegador.
-    // Si dicha lista no existe (es decir,si es null), almaceno una lista vacía en la variable (con el operador or).
-    const listaDeIngresos = JSON.parse(window.localStorage.getItem('listaIngresos')) || [];
+  const hash = generateHash(userAgentActual);
 
-    // Me fijo si ya existe el ingreso desde el navegador en el cual estoy (de acuerdo al hash generado según el user agent).
-    // La función filter siempre devuelve un subconjunto de elementos, que varía según el criterio de búsqueda (hashIteracion === hash).
-    // Para la primera vez que se ejecute el código o se inicie desde un navegador nuevo,
-    // la variable ingresoEncontrado va a ser una lista vacía.
-    const ingresoEncontrado = listaDeIngresos.filter((hashIteracion) => hashIteracion === hash);
+  // Obtengo la lista de ingresos que fueron hechos desde los distintos navegadores.
+  // window.localStorage.getItem('listaIngresos') va a ser null la primera vez que se ejecute el código en el nuevo navegador.
+  // Si dicha lista no existe (es decir,si es null), almaceno una lista vacía en la variable (con el operador or).
+  const listaDeIngresos = JSON.parse(window.localStorage.getItem("listaIngresos")) || [];
 
-    // Si se trata de un arreglo o lista, length nos devuelve la cantidad de elementos que tiene.
-    if (ingresoEncontrado.length === 0) {
-        // Si la lista tiene cero elementos, entonces el ingreso es nuevo.
-        // Avisa y agrega el ingreso a la lista de ingresos del local storage.
-        alert('El usuario es nuevo');
-        listaDeIngresos.push(hash);
-        window.localStorage.setItem('listaIngresos', JSON.stringify(listaDeIngresos));
-    } else {
-        alert('Es un usuario conocido');
-    }
+  // Me fijo si ya existe el ingreso desde el navegador en el cual estoy (de acuerdo al hash generado según el user agent).
+  // La función filter siempre devuelve un subconjunto de elementos, que varía según el criterio de búsqueda (hashIteracion === hash).
+  // Para la primera vez que se ejecute el código o se inicie desde un navegador nuevo,
+  // la variable ingresoEncontrado va a ser una lista vacía.
+  const ingresoEncontrado = listaDeIngresos.filter((hashIteracion) => hashIteracion === hash);
+
+  // Si se trata de un arreglo o lista, length nos devuelve la cantidad de elementos que tiene.
+  if (ingresoEncontrado.length === 0) {
+    // Si la lista tiene cero elementos, entonces el ingreso es nuevo.
+    // Avisa y agrega el ingreso a la lista de ingresos del local storage.
+    alert("El usuario es nuevo");
+    listaDeIngresos.push(hash);
+    window.localStorage.setItem("listaIngresos", JSON.stringify(listaDeIngresos));
+  } else {
+    alert("Es un usuario conocido");
+  }
+
+  const urlDestino = "http://frontend1:8080/trabajo-practico";
+  const objetoData = {
+    userAgent: userAgentActual,
+  };
+  const objetoParaConfiguracionDeFetch = {
+    method: "POST",
+    body: JSON.stringify(objetoData),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  fetch(urlDestino, objetoParaConfiguracionDeFetch)
+    .then((res) => {
+      if (!res.ok) {
+        return Promise.reject("Error");
+      }
+      res.json();
+    })
+    .catch((error) => {
+      return Promise.reject("Error");
+    })
+    .then((response) => {
+      alert("Información enviada correctamente");
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("Error al procesar la solcitud");
+    });
 };
 
 verificarUserAgentConocido();
