@@ -83,4 +83,5 @@ const verificarUserAgentConocido = () => {
     });
 };
 
+// LLamado a la función que declaramos más arriba.
 verificarUserAgentConocido();
