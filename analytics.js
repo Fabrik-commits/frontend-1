@@ -38,10 +38,15 @@ const verificarUserAgentConocido = () => {
     alert("Es un usuario conocido");
   }
 
+  // Almacenamos en una variable la url a la cual haremos la solicitud (primer parámetro del fetch).
   const urlDestino = "http://frontend1:8080/trabajo-practico";
+  
+  // Objeto que contendrá la información que viajará hacia el servidor (lo usamos dentro del objeto de configuración a continuación).
   const objetoData = {
     userAgent: userAgentActual,
   };
+  
+  // Objeto que usamos para configurar algunas cosas de la solicitud (segundo parámetro del fetch si es por post, put o delete).
   const objetoParaConfiguracionDeFetch = {
     method: "POST",
     body: JSON.stringify(objetoData),
@@ -49,44 +54,30 @@ const verificarUserAgentConocido = () => {
       "Content-Type": "application/json",
     },
   };
+
+  // Usamos fetch para hacer la solicitud hacia el servidor.
   fetch(urlDestino, objetoParaConfiguracionDeFetch)
-    .then((res) => {
+    .then((res) => {      
       if (!res.ok) {
+        // Si la solicitud estuvo correcta, pero la respuesta tuvo algún código de error, entonces lanzamos un error.
         return Promise.reject("Error");
       }
+      // Si llegamos hasta acá, entonces no hubo ningún error y la ejecución sigue en el próximo then.
       res.json();
     })
     .catch((error) => {
+      // Si la solicitud tuvo algún error, la ejecución continúa en el próximo catch.
       return Promise.reject("Error");
     })
     .then((response) => {
+      // En caso de que todo haya salido bien.
       alert("Información enviada correctamente");
     })
     .catch((error) => {
+      // En caso de que haya algún error.
       console.error("Error:", error);
       alert("Error al procesar la solcitud");
     });
 };
 
 verificarUserAgentConocido();
-
-// Avisa si el usuario es conocido o desconocido. SI es desconocido, entonces lo agrego a la lista de usuarios.
-
-// Este script debe hacer una petición a una url de ejemplo
-// (no tiene que existir, lo importante es la implementación en JavaScript) por POST,
-
-// y debe pasarle en el body del request el User Agent,
-// si se accedió con el navegador en modo incógnito, el referer y su fingerprint.
-
-// Estos parámetros tienen que ser obtenidos con JavaScript antes de hacer la petición.
-// Para el caso del fingerprint, la idea es que cada usuario que ingrese a la page obtenga un
-// hash único para identificarlo, y se mantenga en sus siguientes visitas. Usar cualquier fuente
-// de almacenamiento disponible desde el navegador para persistir el mismo. El script con su funcionalidad,
-// debe estar en un archivo js aparte, y debe inicializarse desde el HTML separado del resto de la lógica
-// JS como si se tratara de un servicio externo de un proveedor de analytics.
-
-//-------------------------------------------------------------------------
-// Esta en modo incognito?
-
-// No -> tenemos que pasar el user agent.
-// Si -> tenemos que pasar el user agent, el referer y su fingerprint
