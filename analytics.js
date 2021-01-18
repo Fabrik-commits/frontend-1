@@ -48,14 +48,17 @@ const verificarUserAgentConocido = () => {
   
   // Objeto que usamos para configurar algunas cosas de la solicitud (segundo parámetro del fetch si es por post, put o delete).
   const objetoParaConfiguracionDeFetch = {
+    // Generalmente, utilizamos el método POST para guardar cosas en la base de datos.
     method: "POST",
+    // Body contiene el JSON con la información. Convertimos el objeto objetoData a string mediante JSON.stringify, para enviarlo como JSON.
     body: JSON.stringify(objetoData),
+    // Otros atributos de configuración.
     headers: {
       "Content-Type": "application/json",
     },
   };
 
-  // Usamos fetch para hacer la solicitud hacia el servidor.
+  // Usamos fetch para hacer la solicitud hacia el servidor. Cuando tiene un parámetro, se asume que es fetch por GET. Si tiene dos parámetros es por POST, PUT, etc.
   fetch(urlDestino, objetoParaConfiguracionDeFetch)
     .then((res) => {      
       if (!res.ok) {
