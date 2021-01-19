@@ -78,8 +78,9 @@ const verificarUserAgentConocido = () => {
     })
     .catch((error) => {
       // En caso de que haya algún error.
-      console.error("Error:", error);
-      alert("Error al procesar la solcitud");
+      // console.error("Error:", error);
+      //alert("Error al procesar la solcitud");
+      console.error("Error al procesar la solcitud");
     });
 };
 
